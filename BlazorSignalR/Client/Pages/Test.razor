@@ -1,0 +1,26 @@
+﻿@page "/test"
+@using Microsoft.AspNetCore.SignalR.Client
+@inject NavigationManager NM
+<h3>Test</h3>
+
+<p>@NM.ToAbsoluteUri("th")</p>
+
+@code {
+
+	HubConnection hc;
+
+	protected override async Task OnInitializedAsync()
+	{
+		hc = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("th")).Build();
+
+		hc.On<int>("zklj", (x) =>
+		{
+			Console.WriteLine("Bla" + x);
+		});
+
+		hc.StartAsync();
+		await hc.SendAsync("Probna", "arg");
+	}
+
+
+}
