@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using BlazorSignalR.Shared;
+using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,13 @@ namespace BlazorSignalR.Server
 {
 	public class Hab : Hub
 	{
-		public void Probna(string s)
+		public void Dostava(Proba p)
 		{
-			Console.WriteLine("Uspeh :) " + s);
-			Clients.Caller.SendAsync("zklj", 12);
+			//Console.WriteLine($"{p.ID},{p.Nesto},{p.Bla}");
+			DB ef = new DB();
+			ef.Probas.Add(p);
+			ef.SaveChanges();
+			Clients.Caller.SendAsync("saServera", ef.Probas.ToList());
 		}
 	}
 }

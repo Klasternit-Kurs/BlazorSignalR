@@ -1,26 +1,45 @@
 ﻿@page "/test"
 @using Microsoft.AspNetCore.SignalR.Client
 @inject NavigationManager NM
+@using BlazorSignalR.Shared;
+
 <h3>Test</h3>
-
-<p>@NM.ToAbsoluteUri("th")</p>
-
+@po.Bla
+@po.Nesto
+<EditForm Model="@po" OnSubmit="Slanje">
+	<InputNumber @bind-Value="po.Bla"/>
+	<InputText @bind-Value="po.Nesto"/>
+	<button type="submit">Bla</button>
+</EditForm>
+<p>
+	<ul>
+		@foreach(Proba p in lst)
+		{
+			<li>@p.ID -- @p.Bla -- @p.Nesto</li>
+		}
+	</ul>
+</p>
 @code {
-
+	Proba po = new Proba();
 	HubConnection hc;
+	List<Proba> lst = new List<Proba>();
+	public void Slanje()
+	{
+		hc.SendAsync("Dostava", po);
+		po = new Proba();
+	}
 
 	protected override async Task OnInitializedAsync()
 	{
 		hc = new HubConnectionBuilder().WithUrl(NM.ToAbsoluteUri("th")).Build();
 
-		hc.On<int>("zklj", (x) =>
-		{
-			Console.WriteLine("Bla" + x);
-		});
+		hc.On<List<Proba>>("saServera", (l) =>
+				{
+					lst = l;
+					StateHasChanged();
+				});
 
 		hc.StartAsync();
-		await hc.SendAsync("Probna", "arg");
 	}
-
 
 }

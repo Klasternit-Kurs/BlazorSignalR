@@ -8,6 +8,7 @@ namespace BlazorSignalR.Server
 {
 	public class DB : DbContext
 	{
+	
 		public DbSet<Shared.Proba> Probas { get; set; }
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
